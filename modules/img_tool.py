@@ -27,18 +27,14 @@ def enlarge_image(image, min_width=256, min_height=256, ):
     """
     # 获取原始图像的宽度和高度
     original_width, original_height = image.size
-    # 判断是否需要调整大小
     if original_width >= min_width and original_height >= min_width:
         # 图像已经足够大，无需调整
         return image
-    else:
-        # 计算调整后的宽度和高度，保持宽高比例
-        ratio = max(min_width / original_width, min_height / original_height)
-        new_width = int(original_width * ratio)
-        new_height = int(original_height * ratio)
-        # 调整图像大小
-        resized_image = image.resize((new_width, new_height))
-        return resized_image
+    # 计算调整后的宽度和高度，保持宽高比例
+    ratio = max(min_width / original_width, min_height / original_height)
+    new_width = int(original_width * ratio)
+    new_height = int(original_height * ratio)
+    return image.resize((new_width, new_height))
 
 
 def shrink_image(image: Image, max_width=1024, max_height=1024):
@@ -47,43 +43,35 @@ def shrink_image(image: Image, max_width=1024, max_height=1024):
     """
     # 获取原始图像的宽度和高度
     original_width, original_height = image.size
-    # 判断是否需要调整大小
     if original_width <= max_width and original_height <= max_height:
         # 图像已经足够小，无需调整
         return image
-    else:
-        # 计算调整后的宽度和高度，保持宽高比例
-        ratio = min(max_width / original_width, max_height / original_height)
-        new_width = int(original_width * ratio)
-        new_height = int(original_height * ratio)
-        # 调整图像大小
-        resized_image = image.resize((new_width, new_height))
-        return resized_image
+    # 计算调整后的宽度和高度，保持宽高比例
+    ratio = min(max_width / original_width, max_height / original_height)
+    new_width = int(original_width * ratio)
+    new_height = int(original_height * ratio)
+    return image.resize((new_width, new_height))
 
 
 def crop_to_nearest_multiple_of_n(image: Image, base=16) -> Image:
     # 获取原始图像的宽度和高度
     original_width, original_height = image.size
-    # 判断是否需要进行变换
     if original_width % base == 0 and original_height % base == 0:
         # 图像的两边都已经是 16 的倍数，无需变换
         return image
-    else:
-        # 计算新的宽度和高度，分别为大于等于原始尺寸的 16 的倍数
-        new_width = (original_width // base) * base
-        new_height = (original_height // base) * base
-        # 计算中心点坐标
-        center_x, center_y = original_width // 2, original_height // 2
-        half_new_width, half_new_height = new_width // 2, new_height // 2
-        # 计算新的左上角坐标
-        left = center_x - half_new_width
-        top = center_y - half_new_height
-        # 计算新的右下角坐标
-        right = center_x + half_new_width
-        bottom = center_y + half_new_height
-        # 剪裁图像
-        cropped_image = image.crop((left, top, right, bottom))
-        return cropped_image
+    # 计算新的宽度和高度，分别为大于等于原始尺寸的 16 的倍数
+    new_width = (original_width // base) * base
+    new_height = (original_height // base) * base
+    # 计算中心点坐标
+    center_x, center_y = original_width // 2, original_height // 2
+    half_new_width, half_new_height = new_width // 2, new_height // 2
+    # 计算新的左上角坐标
+    left = center_x - half_new_width
+    top = center_y - half_new_height
+    # 计算新的右下角坐标
+    right = center_x + half_new_width
+    bottom = center_y + half_new_height
+    return image.crop((left, top, right, bottom))
 
 
 def crop_center_resize(image: Image, target_width, target_height) -> Image:
@@ -101,15 +89,12 @@ def crop_center_resize(image: Image, target_width, target_height) -> Image:
         box = (0, offset, width, height - offset)
     # 中心裁剪到指定比例
     cropped_image = image.crop(box)
-    # 调整裁剪后的图像尺寸
-    resized_image = cropped_image.resize((target_width, target_height))
-    return resized_image
+    return cropped_image.resize((target_width, target_height))
 
 
 def generate_autocut_filename(original_filename):
     base_name, extension = os.path.splitext(original_filename)
-    new_filename = f"{base_name}_autocut{extension}"
-    return new_filename
+    return f"{base_name}_autocut{extension}"
 
 
 def create_video(input_images, output_video_path, frames_per_second=30):
